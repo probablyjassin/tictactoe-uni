@@ -1,0 +1,8 @@
+.game-box {
+    aspect-ratio: 1;
+    width: 2%;
+    height: 2%;
+    padding: 5em;
+    background-color: rgb(132, 102, 207);
+    grid-template-columns: repeat(3, 1fr)
+}
