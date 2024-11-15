@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,12 +10,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Tic Tac Toe</title>
 </head>
-<body class="bg-purple-200">
+
+<body class="bg-purple-200 space-y-5">
     <div class="flex justify-center">
         <p class="text-3xl">Tic Tac Toe</p>
     </div>
     <game class="grid grid-cols-3">
-        
+
     </game>
+
+    <div id="info" class="flex flex-col justify-center items-center">
+        <button id="start-button"
+            class="p-5 bg-green-400 rounded-md w-36 hover:bg-green-600 transition-all duration-150 active:bg-green-800 active:scale-105">Start
+            game</button>
+        <p id="game-status">No game running</p>
+    </div>
 </body>
+
 </html>
