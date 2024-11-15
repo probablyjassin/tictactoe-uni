@@ -1,5 +1,11 @@
 // game state
 let isGameRunning = false
+function updateRunning(newVal) {
+    isGameRunning = newVal
+    if (newVal == false) {
+        button.style.display = "block"
+    }
+}
 
 // create game board
 gameContainer = document.querySelector("game")
@@ -22,7 +28,16 @@ players = ["X", "O"]
 activePlayer = players[Math.floor(Math.random() * players.length)];
 
 button.addEventListener("click", function () {
-    isGameRunning = true
+    // board reset
+    for (let i = 0; i < 9; i++) {
+        gameContainer.children[i].textContent = "⋅"
+    }
+    // reset occupied class
+    for (let i = 0; i < 9; i++) {
+        gameContainer.children[i].classList.remove('occupied')
+    }
+    // start new
+    updateRunning(true)
     button.style.display = "none"
     gameStatus.textContent = `${activePlayer}'s turn!`
 })
@@ -42,7 +57,12 @@ gameContainer.addEventListener("click", function (event) {
         let winner = hasWon()
         if (winner) {
             gameStatus.textContent = `${winner} has won!`
-            isGameRunning = false
+            updateRunning(false)
+        }
+
+        if (isTie()) {
+            gameStatus.textContent = "It's a tie!"
+            updateRunning(false)
         }
     }
 })
@@ -72,7 +92,7 @@ function hasWon() {
 
     // rows
     for (let i = 0; i < 9; i = i + 3) {
-        if (getSquare(i) === getSquare(i + 1) === getSquare(i + 2)) {
+        if (getSquare(i) === getSquare(i + 1) && getSquare(i + 1) === getSquare(i + 2)) {
             console.log("row")
             detection = getSquare(i)
             if (playerIfIsPlayer(detection)) {
@@ -83,7 +103,7 @@ function hasWon() {
 
     // columns
     for (let i = 0; i < 3; i++) {
-        if (getSquare(i) === getSquare(i + 3) === getSquare(i + 6)) {
+        if (getSquare(i) === getSquare(i + 3) && getSquare(i + 3) === getSquare(i + 6)) {
             console.log("column")
             detection = getSquare(i)
             if (playerIfIsPlayer(detection)) {
@@ -92,4 +112,14 @@ function hasWon() {
         }
 
     }
+}
+
+// check for tie
+function isTie() {
+    for (let i = 0; i < 9; i++) {
+        if (gameContainer.children[i].innerText === "⋅") {
+            return false
+        }
+    }
+    return true
 }
