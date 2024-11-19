@@ -6,7 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="script.js" defer></script>
+    <script src="networking.js" defer></script>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Tic Tac Toe</title>
 </head>
@@ -24,7 +26,12 @@
         </button>
 
         <p id="game-status">No game running</p>
+
     </div>
+
+    <button id="host-btn">Try to host</button>
+    <input id="game-id" type="text">
+    <button id="join-btn">Try to join</button>
 </body>
 
 </html>
