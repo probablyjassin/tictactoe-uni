@@ -18,3 +18,23 @@ game {
     color: white;
     border: 1px solid #000;
 }
+
+#chat {
+
+}
+
+#chat-list {
+    height: 200px;
+    overflow-y: scroll;
+}
+
+#chat-message {
+}
+
+#chat-input {
+    width: 100%;
+}
+
+#chat-send {
+    width: 100%;
+}

@@ -1,90 +1,104 @@
-// P2P implementation using PeerJS
 const peer = new Peer();
 let conn = null;
 let isHost = false;
-let gameState = {
-    board: Array(9).fill(null),
-    currentTurn: 'X'
-};
+let peerId = null;
 
-function showMessage(textContent) {
-    alert(textContent);
-  }
+// Get DOM elements
+const hostBtn = document.getElementById("host-btn");
+const joinBtn = document.getElementById("join-btn");
+const gameIdInput = document.getElementById("game-id");
+const gameStatus = document.getElementById("game-status");
 
+const chatWindow = document.getElementById("chat");
+const chatList = document.getElementById("chat-list");
+const chatInput = document.getElementById("chat-input");
+const chatSend = document.getElementById("chat-send");
 
-// Host game
+// Set up peer connection
+peer.on('open', function (id) {
+    peerId = id;
+    console.log('My peer ID is: ' + id);
+});
+
 function hostGame() {
     isHost = true;
-    const gameId = generateGameId(); // Generate simple game ID
-    showMessage(`Share this game code with opponent: ${gameId}`);
-    
-    peer.on('connection', (connection) => {
-        //conn = connection;
-        //setupGameConnection();
-        showMessage('Hi host!');
+    gameStatus.textContent = `Hosting game. Your game ID is: ${peerId}`;
+
+    // Listen for incoming connections
+    peer.on('connection', function (connection) {
+        conn = connection;
+        console.log("Connected to peer!");
+
+        setupConnectionHandlers();
+        const messageElement = document.createElement('p');
+        messageElement.textContent = `Player 2 joined!`;
+        chatList.appendChild(messageElement);
+        chatWindow.style.display = "block";
     });
 }
 
-// Join game
 function joinGame() {
-    isHost = false;
-    const hostId = document.getElementById("game-id").value
-    console.log(hostId)
+    const hostId = gameIdInput.value;
+    if (!hostId) {
+        gameStatus.textContent = "Please enter a game ID";
+        return;
+    }
+
+    // Connect to host
     conn = peer.connect(hostId);
-    //setupGameConnection();
-    showMessage("yay")
+    setupConnectionHandlers();
 }
 
-function setupGameConnection() {
-    conn.on('open', () => {
+function setupConnectionHandlers() {
+    conn.on('open', function () {
+
+        console.log("Connection established!");
+
+        // Send test message
         if (!isHost) {
-            showMessage('Hi Client');
+            sendMessage("[ Player 2 joined ]");
+            gameStatus.textContent = "Connected!";
         }
     });
 
-    conn.on('data', (data) => {
-        if (data.type === 'move') {
-            handleMove(data.position);
+    // Handle incoming messages here
+    conn.on('data', function (data) {
+        console.log('Received:', data);
+
+        if (typeof data === 'string') {
+            console.log("Received message: " + data);
+            const messageElement = document.createElement('p');
+            messageElement.textContent = `Player 2: ${data}`;
+            chatList.appendChild(messageElement);
         }
     });
-}
 
-function makeMove(position) {
-    if (gameState.board[position] !== null) return;
-    if ((isHost && gameState.currentTurn !== 'X') || 
-        (!isHost && gameState.currentTurn !== 'O')) return;
-
-    // Update local game state
-    gameState.board[position] = gameState.currentTurn;
-    gameState.currentTurn = gameState.currentTurn === 'X' ? 'O' : 'X';
-    
-    // Send move to opponent
-    conn.send({
-        type: 'move',
-        position: position
+    conn.on('close', function () {
+        console.log("Connection closed");
+        gameStatus.textContent = "Connection closed";
+        chatWindow.style.display = "none";
+        conn = null;
     });
-    
-    // Update UI
-    updateBoard();
-    checkWinCondition();
 }
 
-function handleMove(position) {
-    gameState.board[position] = gameState.currentTurn;
-    gameState.currentTurn = gameState.currentTurn === 'X' ? 'O' : 'X';
-    updateBoard();
-    checkWinCondition();
+// Event listeners
+hostBtn.addEventListener('click', hostGame);
+joinBtn.addEventListener('click', joinGame);
+
+// Example function to send messages
+function sendMessage(message) {
+    if (conn && conn.open) {
+        conn.send(message);
+        const messageElement = document.createElement('p');
+        messageElement.textContent = `You: ${message}`;
+        chatList.appendChild(messageElement);
+    } else {
+        console.log("No connection available");
+    }
 }
 
-// Helper functions
-function generateGameId() {
-    return Math.random().toString(36).substring(7);
-}
-
-function checkWinCondition() {
-    // Implement win checking logic
-    // ...
-}
-
-document.getElementById("host-btn").addEventListener('click', hostGame)
-document.getElementById("join-btn").addEventListener('click', joinGame)
+chatSend.addEventListener('click', function () {
+    const message = chatInput.value;
+    sendMessage(message);
+    chatInput.value = "";
+});

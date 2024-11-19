@@ -17,21 +17,32 @@
     <div class="flex justify-center">
         <p class="text-3xl">Tic Tac Toe</p>
     </div>
-    <game class="grid grid-cols-3"></game>
+    <div class="flex">
+        <main>
+            <game class="grid grid-cols-3"></game>
 
-    <div id="info" class="flex flex-col justify-center items-center">
-        <button id="start-button"
-            class="p-5 bg-green-400 rounded-md w-36 hover:bg-green-600 transition-all duration-150 active:bg-green-800 active:scale-105">
-            Start game
-        </button>
+            <div id="info" class="flex flex-col justify-center items-center">
+                <button id="start-button"
+                    class="p-5 bg-green-400 rounded-md w-36 hover:bg-green-600 transition-all duration-150 active:bg-green-800 active:scale-105">
+                    Start game
+                </button>
 
-        <p id="game-status">No game running</p>
+                <p id="game-status">No game running</p>
 
-    </div>
+            </div>
 
-    <button id="host-btn">Try to host</button>
-    <input id="game-id" type="text">
-    <button id="join-btn">Try to join</button>
+            <button id="host-btn">Try to host</button>
+            <input id="game-id" type="text">
+            <button id="join-btn">Try to join</button>
+        </main>
+        <div id="chat" style="display: block;" class="space-y-4 flex flex-col justify-center bg-purple-300 rounded-2xl">
+            <h2 class="text-3xl">Chat</h2>
+            <div id="chat-list">
+                <p class="chat-message">[ Welcome! ]</p>
+            </div>
+            <input id="chat-input" type="text" placeholder="Type here..." class="bg-pink-600 rounded-xl">
+            <button id="chat-send" class="bg-pink-600 rounded-full">Send</button>
+        </div>
 </body>
 
 </html>
