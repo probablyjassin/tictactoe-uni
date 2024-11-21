@@ -93,11 +93,16 @@ function setupConnectionHandlers() {
     conn.on('data', function (data) {
         console.log('Received:', data);
 
-        if (typeof data === 'string') {
+        if (typeof data === Object) {
             console.log("Received message: " + data);
-            const messageElement = document.createElement('p');
-            messageElement.textContent = `Player 2: ${data}`;
-            chatList.appendChild(messageElement);
+            if (data["type"] == "message") {
+                const messageElement = document.createElement('p');
+                messageElement.textContent = `Player 2: ${data["content"]}`;
+                chatList.appendChild(messageElement);
+            }
+            if (data["type"] == "move") {
+
+            }
         }
     });
 
@@ -116,12 +121,18 @@ joinBtn.addEventListener('click', joinGame);
 // Example function to send messages
 function sendMessage(message) {
     if (conn && conn.open) {
-        conn.send(message);
+        conn.send({"type": "message", "content": message});
         const messageElement = document.createElement('p');
         messageElement.textContent = `You: ${message}`;
         chatList.appendChild(messageElement);
     } else {
         console.log("No connection available");
+    }
+}
+
+function sendMove(move) {
+    if (conn && conn.open) {
+        conn.send({"type": "move", "content": move})
     }
 }
 
